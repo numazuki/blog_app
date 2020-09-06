@@ -1,6 +1,4 @@
 Rails.application.routes.draw do
-  get 'articles/new'
-  get 'articles/create'
   devise_for :users, controllers: {
     registrations: 'users/registrations'
   }
@@ -9,8 +7,11 @@ Rails.application.routes.draw do
     post 'profiles', to: 'users/registrations#create_profile'
   end
   $date = Time.now.in_time_zone('Tokyo').to_s
-
   root "articles#index"
-
-  resources :articles, only: [:index, :new, :create]
+  resources :articles, only: [:index, :new, :create, :show] do
+    collection do
+      post "markdown"
+      post "set_blob"
+    end
+  end
 end

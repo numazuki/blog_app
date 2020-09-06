@@ -1,0 +1,6 @@
+<h2>Articles#show</h2>
+
+<p>サムネイル::<%= image_tag @article.thumbnail.to_s, alt:"#{@article.thumbnail.to_s}" %></p>
+<p>タイトル:<%= @article.title%></p>
+<p>概要:<%= @article.abstract%></p>
+<p>本文:<%= markdown(@article.body)%></p>
