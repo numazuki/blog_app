@@ -1,0 +1,49 @@
+<% actionName = "#{controller.controller_name}##{controller.action_name}" %>
+
+<% if actionName == "articles#new" %>
+  <% actionPath = articles_path %>
+<% elsif actionName == "articles#edit" %>
+  <% actionPath = article_path %>
+<% elsif actionName == "drafts#edit" %>
+  <% actionPath = draft_path %>
+  <% @article = @draft %>
+<% end %>
+
+<div id="header" action="<%= actionName %>" <% if actionName == "articles#edit" || actionName == "drafts#edit" %>thumbnail ="<%= @article.thumbnail%>"<% end %>></div>
+<%= form_with model: @article, url: actionPath, id: "article_form" do |f| %>
+  <div class="top-wrapper">
+    <label>
+      <div class="thumbnail">サムネ画像を選択</div>
+      <%= f.file_field :thumbnail, class:"input-thumb"  %>
+    </label>
+    <div class="input-wrapper">
+      <%= f.text_field :title,    placeholder: "タイトル" %>
+      <%= f.text_field :abstract, placeholder: "記事概要" %>
+      <% if actionName == "articles#new"%>
+        <%= f.text_field :tag,    placeholder: "タグ" %>
+      <% elsif actionName == "articles#edit" || "drafts#edit" %>
+        <%= f.text_field :tag,    placeholder: "タグ" , value: @tag %>
+      <% end %>
+    </div>
+  </div>
+  <div class="middle-wrapper">
+    <%= f.text_area :body, class:"body input-area" %>
+    <div id="preview" class="input-area"></div>
+  </div>
+  <div class="bottom-wrapper">
+    <% if actionName == "articles#new" %>
+      <%= f.fields_for :images do |i|%>
+        <label class="image_fields">
+          <div class="image-button">画像を挿入</div>
+          <%= i.file_field :image %>
+        </label>
+      <% end %>
+    <% end %>
+    <div class="submit-btn">
+      <% if actionName == "articles#new" || "drafts#edit" %>
+        <%= f.submit "下書き保存", id:"draft" %>
+      <% end %>
+      <%= f.submit "投稿する" %>
+    </div>
+  </div>
+<% end %>

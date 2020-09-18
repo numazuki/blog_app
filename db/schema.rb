@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_09_06_031610) do
+ActiveRecord::Schema.define(version: 2020_09_17_050314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,12 +26,31 @@ ActiveRecord::Schema.define(version: 2020_09_06_031610) do
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
+  create_table "drafts", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "thumbnail", null: false
+    t.string "abstract", null: false
+    t.text "body", null: false
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_drafts_on_user_id"
+  end
+
+  create_table "dtags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "images", force: :cascade do |t|
     t.string "image"
     t.bigint "article_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "draft_id"
     t.index ["article_id"], name: "index_images_on_article_id"
+    t.index ["draft_id"], name: "index_images_on_draft_id"
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -49,6 +68,30 @@ ActiveRecord::Schema.define(version: 2020_09_06_031610) do
     t.index ["user_id"], name: "index_profiles_on_user_id"
   end
 
+  create_table "tag_articles", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_tag_articles_on_article_id"
+    t.index ["tag_id"], name: "index_tag_articles_on_tag_id"
+  end
+
+  create_table "tag_drafts", force: :cascade do |t|
+    t.bigint "draft_id", null: false
+    t.bigint "dtag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["draft_id"], name: "index_tag_drafts_on_draft_id"
+    t.index ["dtag_id"], name: "index_tag_drafts_on_dtag_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -64,6 +107,12 @@ ActiveRecord::Schema.define(version: 2020_09_06_031610) do
   end
 
   add_foreign_key "articles", "users"
+  add_foreign_key "drafts", "users"
   add_foreign_key "images", "articles"
+  add_foreign_key "images", "drafts"
   add_foreign_key "profiles", "users"
+  add_foreign_key "tag_articles", "articles"
+  add_foreign_key "tag_articles", "tags"
+  add_foreign_key "tag_drafts", "drafts"
+  add_foreign_key "tag_drafts", "dtags"
 end

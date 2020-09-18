@@ -8,10 +8,14 @@ Rails.application.routes.draw do
   end
   $date = Time.now.in_time_zone('Tokyo').to_s
   root "articles#index"
-  resources :articles, only: [:index, :new, :create, :show] do
+  resources :articles do
     collection do
       post "markdown"
       post "set_blob"
+      post "search"
+      get "set_draft"
     end
   end
+  resources :drafts, only: [:index, :edit, :update, :show, :destroy]
+  resources :tags, only: [:show]
 end

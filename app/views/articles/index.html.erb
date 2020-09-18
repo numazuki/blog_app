@@ -1,2 +1,21 @@
-id:<%=current_user.id%>
-<%= link_to "ログアウト", destroy_user_session_path, method: "delete" %>
+<%= $date %>にデプロイが成功しました
+<% if user_signed_in? %>
+  <p>ようこそ<%= User.find(current_user.id).profile.nickname %>さん</p>
+  <p><%= link_to "新規記事投稿", new_article_path %></p>
+  <p><%= link_to "ログアウト", destroy_user_session_path, method: "delete" %></p>
+  <%if @articles.present?%>
+    <% @articles.each do |article| %>
+      <p><%= link_to article.title, article_path(article)%> </p>
+    <% end %> 
+  <%end%>
+
+  <%= form_with url: search_articles_path, local: true do |f| %>
+    <%= f.text_field :search, placeholder: "単語で記事を検索" %>
+  <% end %>
+ 
+<% else %>
+  <p><%= link_to "新規ユーザ登録", new_user_registration_path %></p>
+<% end %>
+
+
+

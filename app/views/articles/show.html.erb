@@ -1,6 +1,16 @@
 <h2>Articles#show</h2>
 
-<p>サムネイル::<%= image_tag @article.thumbnail.to_s, alt:"#{@article.thumbnail.to_s}" %></p>
-<p>タイトル:<%= @article.title%></p>
-<p>概要:<%= @article.abstract%></p>
-<p>本文:<%= markdown(@article.body)%></p>
+<% if current_user.id == @article.user_id %>
+  <p><%= link_to "記事を編集する", edit_article_path(@article.id) %></p>
+  <p><%= link_to "記事を削除する", article_path, method:"delete" %></p>
+<% end %>
+
+<p>タグ:
+  <% TagArticle.where(article: @article.id).each do|t| %>
+    <%= link_to t.tag.name, tag_path(t.tag.id) %>
+  <% end %>
+</p>
+<p>サムネイル:<%= image_tag @article.thumbnail.to_s, alt:"#{@article.thumbnail.to_s}" %></p>
+<p>タイトル:<%= @article.title %></p>
+<p>概要:<%= @article.abstract %></p>
+<p>本文:<%= markdown(@article.body) %></p>
